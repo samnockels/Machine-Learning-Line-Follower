@@ -1,0 +1,5 @@
+
+# load 
+echo "Loading source..."
+cat src/get_blocks.py > ~/pixy/build/libpixyusb_swig/get_blocks.py
+cat src/ps4controller.py > ~/pixy/build/libpixyusb_swig/ps4controller.py
