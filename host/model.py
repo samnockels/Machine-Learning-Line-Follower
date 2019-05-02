@@ -14,6 +14,9 @@ import extract_features
 class Model:
     
     def __init__(self, file_path, left_right=False, matrix=False, matrix_size=2):
+        #
+        # Load models
+        #
         self.left_right = left_right
         self.matrix = matrix
         self.matrix_size = matrix_size
@@ -33,14 +36,20 @@ class Model:
     def predict(self, blocks):
             
         if self.matrix:
+
             # extract into matrix
             ext = extract_features.ExtractFeatures(self.matrix_size)
             extracted = np.asarray(ext.from_frame(blocks)).flatten().tolist()
 
             # make and return prediction
             return [self.lm.predict([extracted])[0], self.rm.predict([extracted])[0]]
+
         else:
+            
+            # take weighted average from blocks
             x,y = format.weightedAvgBlocks(blocks)
+
+            # use weighted average x,y coordinate to make prediction
             if self.left_right:
                 return [self.lm.predict([[x,y]])[0], self.rm.predict([[x,y]])[0]]
             else:

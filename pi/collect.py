@@ -12,15 +12,18 @@ sys.path.insert(0,'/home/pi/pixy/build/libpixyusb_swig/')
 import get_blocks
 import ps4controller
 
-#
-# main loop will poll pixy & controller
-#
 def run():
+
+	# store collected data in this list
 	data = []
+
+	# initialise Pixy and Controller 
 	print("Initialising Pixy...")
 	pixy = get_blocks.Pixy()
 	print("Initialising PS4 Controller...")
 	controller = ps4controller.PS4Controller(True)
+
+	# countdown 
 	print("Starting 3")
 	time.sleep(1)
 	print("Starting 2")
@@ -29,6 +32,7 @@ def run():
 	time.sleep(1)
 	print("Go")
 	i = 0
+
 	while True:
 		try:
 			i += 1
@@ -39,27 +43,20 @@ def run():
 			xButton = 0
 
 			# get blocks & controller input
-			# !! the following must be called regularly in order to
+			# !! must be called regularly in order to
 			# !! clear both pixy & controller queue
 			
 			controllerData = controller.poll()
 			axes = controllerData[0]
 			xButton = controllerData[1]
-			# print(blocks, axes)
 
+			# if x button pressed, stop data collection
 			if xButton == 1:
 				raise KeyboardInterrupt
 
 			# control motors with controller data 
-			if True:
-				motor1 = axes[1] * -100
-				motor2 = axes[4] * -100
-			else:
-				throttle = (axes[5]+1)*25
-				direction = axes[3] * 75
-				motor1 = throttle + direction
-				motor2 = throttle - direction
-
+			motor1 = axes[1] * -100
+			motor2 = axes[4] * -100
 			explorerhat.motor.one.speed(motor1)	
 			explorerhat.motor.two.speed(motor2)
 
@@ -70,9 +67,11 @@ def run():
 
 		except KeyboardInterrupt:
 
+			# stop motors
 			explorerhat.motor.one.speed(0)	
 			explorerhat.motor.two.speed(0)
 
+			# save collected data as 'data.json' 
 			if( raw_input("Local save?").upper() == "Y" ):
 				print("Saving data...")
 				with open("data.json", 'w') as out:
@@ -80,5 +79,6 @@ def run():
 			print("Done")
 			sys.exit(0)
 
+## Entry point
 if __name__ == '__main__':
 	run()

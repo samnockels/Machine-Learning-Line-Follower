@@ -1,7 +1,9 @@
 """
-'Run' a model on the rover
-Send pixy data to server running on the machine with the model,
-receive the prediction, and send prediction as input to both motors
+Run a model on the robot, using an external machine
+
+1. Send pixy data to machine with the model,
+2. Receive the prediction 
+3. Send prediction as input to both motors
 """
 import os
 import sys
@@ -16,17 +18,23 @@ import pygame
 class Run_Model:
 
     def __init__(self, motors=False, lostLineStop=False):
+
+        self.outputToMotors = motors
+        self.lostLineStop = lostLineStop
+        
+        # Initialise pygame (in headless mode)
         pygame.init()
         os.environ["SDL_VIDEODRIVER"] = "dummy" # or maybe 'fbcon'
         screen = pygame.display.set_mode((1,1))
-        self.outputToMotors = motors
-        self.lostLineStop = lostLineStop
-        # init pixy
+
+        # Initiialise Pixy
         print("Initialising Pixy...")
         self.pixy = get_blocks.Pixy()
-        # make connection to server
+
+        # Make connection to server (external machine with model)
         self.server = ipc.IPC()
         self.server.connect('samsmac', 12955)
+
         # run loop
         self.run()
 
@@ -38,14 +46,14 @@ class Run_Model:
 
         start_time = time.time()
 
-        time_without_blocks = -1
         searching = False
-        lost_line_count = 0
         predictions = 0
-
+        lost_line_count = 0
+        time_without_blocks = -1
+    
         while True:
             try:                
-                # Poll pixy
+                # Poll Pixy for data
                 blocks = self.pixy.poll()                
                 print(str(len(blocks)) + " blocks")
 
@@ -56,10 +64,10 @@ class Run_Model:
                     time_without_blocks = -1
                     searching = False
                     
-                    # send blocks to server
+                    # 1. Send blocks to server
                     self.server.send(blocks)
 
-                    # block until received prediction for motors
+                    # 2. block until received prediction for motors
                     prediction = self.server.recv()
                     if not prediction:
                         break
@@ -68,22 +76,26 @@ class Run_Model:
                     motor1 = prediction[0]
                     motor2 = prediction[1]
 
-                    # just for protection
-                    if motor1 > 100: motor1 = 100
+                    # just for protection 
+                    # (model could output greater than 100 or less than -100)
+                    if motor1 > 100:  motor1 = 100
                     if motor1 < -100: motor1 = -100
-                    if motor2 > 100: motor2 = 100
+                    if motor2 > 100:  motor2 = 100
                     if motor2 < -100: motor2 = -100
 
-                    # write to motors
+                    # 3. write to motors
                     if self.outputToMotors:
                         explorerhat.motor.one.speed(motor1)
                         explorerhat.motor.two.speed(motor2)
                         predictions+=1 
+
                 else:
-                    
+                    # no blocks found
+
+                    # stop rover from moving, 
+                    # and display debugging message
+
                     if self.lostLineStop:
-                        # stop rover from moving, 
-                        # and display debugging message
                         current_time = time.time()
                         if time_without_blocks == -1:
                             self.server.send("LOST_LINE")
@@ -102,20 +114,19 @@ class Run_Model:
             except KeyboardInterrupt:
 
                 end_time = time.time()
-
                 duration = end_time - start_time
-
                 print("Done")
                 print("Summary:")
-
                 print(str(predictions) + " predictions made" )
                 print(str(duration) + "s run time" )
                 print("lost line " + str(lost_line_count) + " times")
-
                 sys.exit(0)
 
 
 if __name__ == "__main__":
+
+    print("USAGE: python3 run_mode.py <output to motors?> <stop or pause when line lost>")
+
     if len(sys.argv) > 1:
         runmotors=False
         lost_line_stop=False
@@ -124,6 +135,7 @@ if __name__ == "__main__":
         if sys.argv[2] == "true":
             lost_line_stop=True
         Run_Model(runmotors,lost_line_stop)
+
 
 
 

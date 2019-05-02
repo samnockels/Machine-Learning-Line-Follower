@@ -18,7 +18,7 @@ class Server:
 
     def __init__(self):
 
-        # init model
+        # Uncomment Model that you want to run (Linear Regression/Neural Network)(Weighted Average, Matrix 3x3, Matrix 9x9)
         
         # Linear Regression
         self.model = model.Model("models/linear_regression/weighted_xy/", left_right=True)
@@ -36,12 +36,6 @@ class Server:
         print("Connected to rover")
         self.frameCount = 0
 
-        # init pygame
-        # pygame.init()
-        # self.size = (700, 500)
-        # self.screen = pygame.display.set_mode(self.size)
-        # self.clock = pygame.time.Clock()
-
         # run main loop
         self.run()
 
@@ -50,34 +44,22 @@ class Server:
             while True:
                 self.frameCount += 1
 
-                # receive data from rover
-                # print("Waiting for data")
+                # 1. Receive data from robot
                 message = self.server.recv()
                 if not message:
                     break
 
                 if message == "LOST_LINE":
-                    os.system('say "Lost Line"')
+                    print("Lost Line")
                 else:
                     blocks = message
             
-                    # make prediction
+                    # 2. Make prediction
                     prediction = self.model.predict( blocks )
 
-                    # send prediction back to rover 
+                    # 3. Send prediction back to robot
                     print(prediction)
                     self.server.send(prediction)
-                    
-                    # pygame.event.get() # clear pygame queue
-                    # self.screen.fill((255,255,255))
-                    # # Draw an ellipse, using a rectangle as the outside boundaries
-                    # pygame.draw.ellipse(self.screen, (0,0,0), [200, 200+(prediction[0]*150), 50, 50], 0)
-                    # pygame.draw.ellipse(self.screen, (0,0,0), [400, 200+(prediction[1]*150), 50, 50], 0)
-                    # pygame.draw.line(self.screen,(0,0,0),[300,200],[300+((prediction[0]*100)-(prediction[1]*100)),10])
-                    # font = pygame.font.SysFont(None, 20)
-                    # text = font.render(str(prediction),True, (0,0,0))
-                    # self.screen.blit(text, (100,100))
-                    # pygame.display.flip()
                 
         finally:       
             # make sure to close the socket to the rover 
