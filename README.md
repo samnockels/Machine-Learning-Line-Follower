@@ -1,9 +1,19 @@
 ## Line Follower using the [Pixy Camera](https://pixycam.com/pixy-cmucam5/) and Machine Learning
 
 This repo showcases my dissertation project for exploring machine learning techniques
-for use on raw sensor data - in this case, the computer vision sensor Pixy is used to 
-follow a line.
+for a line follower. 
 
-I will be uploading more here soon, but for now here is an image of the line follower :)
+This directory contains:
 
-![alt text](https://raw.githubusercontent.com/samnockels/ML-Line-Follower/master/follower.jpeg)
+**/host** - this directory contains code for connecting to the Raspberry Pi in order to run a model
+
+**/learning** - this directory contains all of the code for developing models
+
+**/data** - this directory contains all of the collected data
+
+**/pi** - this code contains the code to be installed on the raspberry pi
+
+
+---
+![alt text](https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/follower.jpeg)
+
