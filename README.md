@@ -24,6 +24,8 @@ A total of 40 laps of data was recorded on the track (a total of ~2 million fram
 - a_1 to a_5 are all left turns  (normal orientation on track)
 - b_1 to b_5 are all right turns (reverse orientation on track)
 
+<img src="https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/orientations.png">
+
 | Dataset # |  Orientation on track | Number of laps recorded | Number of samples recorded |
 |-|-|-|-|
 |a_1| Normal |4| 237,763|
@@ -38,7 +40,13 @@ A total of 40 laps of data was recorded on the track (a total of ~2 million fram
 |b_5| Reverse| 4| 226,914|
 ||**Total**| **40**| **2,303,815**|
 
-| Normal Orientation (left turns) |  Reverse Orientation (right turns) |
+---
 
 ## Results
+
+Two models were built, one using Linear Regression & one using Neural Network.  The heatmaps below show what each model has learnt.  Each cell on the heatmap represents an area of the frame that the camera could detect the line - a dark colour represents a low power to the motor, and a light colour representa a high power to the motor.  There are two plots per model - one for the left motor and one for the right motor.
+
+<img src="https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/linear-regression.png">
+<img src="https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/neural-network.png">
+
 
