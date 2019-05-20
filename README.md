@@ -44,7 +44,7 @@ A total of 40 laps of data was recorded on the track (a total of ~2 million fram
 
 ## Results
 
-Two models were built, one using Linear Regression & one using Neural Network.  The heatmaps below show what each model has learnt.  Each cell on the heatmap represents an area of the frame that the camera could detect the line - a dark colour represents a low power to the motor, and a light colour representa a high power to the motor.  There are two plots per model - one for the left motor and one for the right motor.
+Two models were built, one using Linear Regression & one using Neural Network.  The heatmaps below show what each model has learnt.  Each cell on the heatmap represents an area of the frame that the camera could detect the line - a dark colour represents a low power to the motor, and a light colour represents a high power to the motor.  There are two plots per model - one for the left motor and one for the right motor.
 
 <img src="https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/linear-regression.png">
 <img src="https://raw.githubusercontent.com/samnockels/Machine-Learning-Line-Follower/master/neural-network.png">
